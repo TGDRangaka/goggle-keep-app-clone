@@ -42,7 +42,14 @@ export default function Index() {
             }} />
             <ListNote />
             <ImageNote />
-
+            {
+              new Array(5).fill(null).map((_, i) => (
+                <Note key={i} note={{
+                  title: 'Title-',
+                  body: 'Lorem ipsum dolor sit amet consectetur',
+                }} />
+              ))
+            }
           </ThemedView>
         </ThemedView>
 

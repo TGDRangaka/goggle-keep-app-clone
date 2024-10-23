@@ -64,7 +64,7 @@ export default function Layout() {
             options={{
               drawerLabel: 'Archive',
               drawerIcon: ({ color }) => (
-                <Ionicons name="add" size={24} color={color} />
+                <Ionicons name="archive-outline" size={24} color={color} />
               ),
             }}
           />
@@ -73,7 +73,7 @@ export default function Layout() {
             options={{
               drawerLabel: 'Trash',
               drawerIcon: ({ color }) => (
-                <Ionicons name="add" size={24} color={color} />
+                <Ionicons name="trash-outline" size={24} color={color} />
               ),
             }}
           />
@@ -82,7 +82,7 @@ export default function Layout() {
             options={{
               drawerLabel: 'Settings',
               drawerIcon: ({ color }) => (
-                <Ionicons name="add" size={24} color={color} />
+                <Ionicons name="settings-outline" size={24} color={color} />
               ),
             }}
           />
@@ -91,7 +91,7 @@ export default function Layout() {
             options={{
               drawerLabel: 'Help & Feedback',
               drawerIcon: ({ color }) => (
-                <Ionicons name="add" size={24} color={color} />
+                <Ionicons name="help-circle-outline" size={24} color={color} />
               ),
             }}
           />
