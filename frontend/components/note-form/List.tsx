@@ -22,8 +22,14 @@ export default function List({ list }: Props) {
         setTasks([...tasks, newTask]);
     }
 
-    const handleComplete = () => {
-        
+    const toggleCompleted = (id: string) => {
+        const newTasks = tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task);
+        setTasks(newTasks);
+    }
+
+    const handleRemove = (id: string) => {
+        const newTasks = tasks.filter(task => task.id !== id);
+        setTasks(newTasks);
     }
 
     return (
@@ -36,11 +42,11 @@ export default function List({ list }: Props) {
                             <Text className='-ml-[14px]'><Ionicons name='ellipsis-vertical' size={25} /></Text>
                         </View>
 
-                        <Checkbox value={task.completed} className='opacity-40' />
+                        <Checkbox value={task.completed} className='opacity-40' onValueChange={v => toggleCompleted(task.id)} />
 
                         <TextInput className='text-lg text-gray-800 flex-grow' placeholderTextColor='#C4C3C9' value={task.task} />
 
-                        <TouchableOpacity className='scale-150'><Ionicons name='close-outline' size={25} color={'gray'} /></TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleRemove(task.id)} className='scale-150'><Ionicons name='close-outline' size={25} color={'gray'} /></TouchableOpacity>
                     </View>
                 ))
 
@@ -50,9 +56,9 @@ export default function List({ list }: Props) {
             <View className='flex-row items-center mt-5 space-x-5'>
                 <View className='flex-row w-[25px]' />
 
-                <TouchableOpacity 
-                onPress={handleAdd}
-                className='flex-row items-center'>
+                <TouchableOpacity
+                    onPress={handleAdd}
+                    className='flex-row items-center'>
                     <Ionicons name='add' size={25} color={'gray'} />
                     <Text className='ml-4 text-lg text-gray-500'>List item</Text>
                 </TouchableOpacity>
@@ -72,11 +78,11 @@ export default function List({ list }: Props) {
                             <View key={task.id} className='flex-row items-center mt-5 space-x-5'>
                                 <View className='flex-row w-[25px]' />
 
-                                <Checkbox value={task.completed} className='opacity-40' />
+                                <Checkbox value={task.completed} className='opacity-40' onValueChange={v => toggleCompleted(task.id)} />
 
-                                <TextInput className='text-lg text-gray-800 flex-grow' placeholderTextColor='#C4C3C9' placeholder='Note' value={task.task} />
+                                <TextInput className='text-lg text-gray-800 flex-grow' placeholderTextColor='#C4C3C9' value={task.task} />
 
-                                <TouchableOpacity className='scale-150'><Ionicons name='close-outline' size={25} color={'gray'} /></TouchableOpacity>
+                                <TouchableOpacity onPress={() => handleRemove(task.id)} className='scale-150'><Ionicons name='close-outline' size={25} color={'gray'} /></TouchableOpacity>
                             </View>
                         ))
                     }

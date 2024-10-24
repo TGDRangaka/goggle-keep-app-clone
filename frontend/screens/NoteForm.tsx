@@ -29,7 +29,7 @@ export default function NoteForm({ note }: Props) {
             note.body && setBody(note.body);
             note.imgs && note.imgs.length > 0 && setImgs(note.imgs);
             note.list && note.list.length > 0 && setList(note.list);
-            if(note.list){
+            if (note.list) {
                 setIsNote(false);
             }
         }
@@ -43,6 +43,7 @@ export default function NoteForm({ note }: Props) {
                 // create note
                 // alert('create note');
             }
+            // alert(JSON.stringify(note));
         }
     }, [])
 
@@ -60,20 +61,41 @@ export default function NoteForm({ note }: Props) {
                 </View>
 
                 <View className='px-4'>
-                    {/* inputs */}
-                    <TextInput className='w-screen mt-5 text-2xl text-gray-800' placeholderTextColor='#99989E' placeholder='Title' value={title} onChangeText={t => setTitle(t)} />
+                    {/* Title */}
+                    <TextInput
+                        className='w-screen mt-5 text-2xl text-gray-800'
+                        placeholderTextColor='#99989E'
+                        placeholder='Title'
+                        multiline={true}
+                        value={title} onChangeText={t => setTitle(t)} />
+
+                    {/* Note */}
                     {
-                        isNote && <TextInput className='w-screen mt-5 text-lg text-gray-800' placeholderTextColor='#C4C3C9' placeholder='Note' value={body} onChangeText={t => setBody(t)} />
+                        isNote && <TextInput
+                            className='w-screen mt-5 text-lg text-gray-800'
+                            placeholderTextColor='#C4C3C9'
+                            placeholder='Note'
+                            multiline={true}
+                            value={body}
+                            onChangeText={t => setBody(t)} />
                     }
 
                     {/* checkboxes */}
                     {
-                        list && list.length > 0 &&  <List list={list} />
+                        list && list.length > 0 && <List list={list} />
+                    }
+
+                    {/* reminder */}
+                    {
+                        note?.reminder &&
+                        <View className='flex-row w-full ml-[45px] mt-5'>
+                            <View className='bg-gray-300 p-1 flex-row items-center rounded-lg flex-shrink'>
+                                <Ionicons name='alarm-outline' size={15} color={'#6b7280'} />
+                                <ThemedText className='mx-1 text-xs text-gray-500 font-semibold'>{'Tomorrow, 08:00'}</ThemedText>
+                            </View>
+                        </View>
                     }
                 </View>
-
-
-
             </ScrollView>
 
             {/* bottom tool bar */}

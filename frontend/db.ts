@@ -16,7 +16,7 @@ export const notes1: TNote[] = [
   {
     id: "2",
     title: "Meeting Notes",
-    body: "Discuss project milestones and set deadlines for next phase.",
+    body: "Discuss project milestones and set deadlines for next phase. Discuss project milestones and set deadlines for next phase.Discuss project milestones and set deadlines for next phase.",
     imgs: [],
     createdDate: new Date("2024-10-21T09:00:00"),
   },
