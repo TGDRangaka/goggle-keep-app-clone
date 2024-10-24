@@ -1,7 +1,12 @@
+import { TTask } from "./TTask";
+
 export type TNote = {
+    id: string,
     title?: string,
     body?: string,
-    type?: string,
+    list?: TTask[],
     imgs?: string[],
-    reminder?: string,
+    reminder?: Date,
+    color?: string,
+    createdDate?: Date,
 }

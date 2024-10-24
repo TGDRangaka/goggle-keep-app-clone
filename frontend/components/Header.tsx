@@ -14,7 +14,7 @@ export default function Header() {
   }
 
   return (
-    <ThemedView className='bg-gray-800 w-full py-2 px-5 mb-5 rounded-full flex-row items-center space-x-3'>
+    <ThemedView className='bg-gray-100 w-full py-2 px-5 mb-5 rounded-full flex-row items-center space-x-3'>
       <TouchableOpacity onPress={handleMenuClick}>
         <Ionicons name='menu' size={30} color='#b9b9c4' />
       </TouchableOpacity>
