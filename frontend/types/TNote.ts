@@ -5,8 +5,8 @@ export type TNote = {
     title?: string,
     body?: string,
     list?: TTask[],
-    imgs?: string[],
-    reminder?: Date,
+    imgs?: any[],
+    reminder?: string,
     color?: string,
     createdDate?: Date,
 }

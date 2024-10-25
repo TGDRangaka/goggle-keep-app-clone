@@ -3,15 +3,18 @@ import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import Checkbox from 'expo-checkbox'
 import { TTask } from '@/types/TTask'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/states/store'
+import { noteformActions } from '@/states/noteFormSlice'
 
-type Props = {
-    list: TTask[]
-}
+export default function List() {
+    const { list } = useSelector((root: RootState) => root.noteForm.note);
+    if (!list) return null;
+    
+    const dispatch = useDispatch();
 
-export default function List({ list }: Props) {
-    const [tasks, setTasks] = useState<TTask[]>(list);
-    const unchecked = [...tasks].filter(t => !t.completed);
-    const completed = [...tasks].filter(t => t.completed);
+    const unchecked = [...list].filter(t => !t.completed);
+    const completed = [...list].filter(t => t.completed);
 
     const handleAdd = () => {
         const newTask: TTask = {
@@ -19,17 +22,15 @@ export default function List({ list }: Props) {
             task: '',
             completed: false,
         }
-        setTasks([...tasks, newTask]);
+        dispatch(noteformActions.addTask(newTask));
     }
 
     const toggleCompleted = (id: string) => {
-        const newTasks = tasks.map(task => task.id === id ? { ...task, completed: !task.completed } : task);
-        setTasks(newTasks);
+        dispatch(noteformActions.toggleTaskCompleted(id));
     }
 
     const handleRemove = (id: string) => {
-        const newTasks = tasks.filter(task => task.id !== id);
-        setTasks(newTasks);
+        dispatch(noteformActions.removeTask(id));
     }
 
     return (

@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
-import { ThemedView } from './ThemedView'
 import { ThemedText } from './ThemedText'
-import { Image, Modal, TouchableOpacity, View, Image as RImage } from 'react-native'
+import { Modal, TouchableOpacity, View,} from 'react-native'
 import { TNote } from '@/types/TNote'
 import { Ionicons } from '@expo/vector-icons'
 import NoteForm from '@/screens/NoteForm'
-import { Image as Img } from 'expo-image'
-import { LinearGradient } from 'expo-linear-gradient'
-import Checkbox from 'expo-checkbox'
 import Images from './note/Images'
 import List from './note/List'
+import { useDispatch, useSelector } from 'react-redux'
+import { RootState } from '@/states/store'
+import NoteService from '@/services/noteService'
+import { noteformActions } from '@/states/noteFormSlice'
 
 type Props = {
     note: TNote
@@ -18,15 +18,21 @@ type Props = {
 export default function Note(props: Props) {
     const { id, title, body, imgs, list, reminder, color, createdDate } = props.note
     const [modalVisible, setModalVisible] = useState<boolean>(false);
-    const imageSource = require('@/assets/images/icon.png');
-    const { width, height } = RImage.resolveAssetSource(imageSource);
-    const aspectRatio = width / height; // Calculate the aspect ratio
+
+    const { note } = useSelector((root: RootState) => root.noteForm);
+    const dispatch = useDispatch();
+
+    const handleModalClose = async () => {
+        await NoteService.save(note);
+        setModalVisible(false);
+        dispatch(noteformActions.clearNote());
+    }
 
     return (
         <TouchableOpacity
             onPress={() => setModalVisible(true)}
         >
-            <View className='border border-gray-400 rounded-xl mb-2 overflow-hidden' style={color ? { borderColor: color} : null}>
+            <View className='border border-gray-400 rounded-xl mb-2 overflow-hidden' style={color ? { borderColor: color } : null}>
                 {/* images */}
                 {
                     imgs && imgs.length > 0 && <Images imgs={imgs} />
@@ -63,7 +69,7 @@ export default function Note(props: Props) {
 
                             {/* note color */}
                             {
-                                color && <View className={`h-6 w-6 rounded-full`} style={{ backgroundColor: color}}></View>
+                                color && <View className={`h-6 w-6 rounded-full`} style={{ backgroundColor: color }}></View>
                             }
                         </View>
                     }
@@ -78,11 +84,9 @@ export default function Note(props: Props) {
                 animationType='slide'
                 transparent={true}
                 visible={modalVisible}
-                onRequestClose={() => {
-                    setModalVisible(false);
-                }}
+                onRequestClose={handleModalClose}
             >
-                <NoteForm note={props.note} />
+                <NoteForm data={props.note} />
             </Modal>
         </TouchableOpacity>
 

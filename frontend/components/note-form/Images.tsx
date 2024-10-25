@@ -1,16 +1,17 @@
-import { View, Text, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Image, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
-import { LinearGradient } from 'expo-linear-gradient'
-import { Ionicons } from '@expo/vector-icons'
+import { useSelector } from 'react-redux';
+import { RootState } from '@/states/store';
 
-type Props = {
-    imgs: any[]
-}
+export default function Images() {
+    const { newImgs } = useSelector((root: RootState) => root.noteForm);
+    const { imgs } = useSelector((root: RootState) => root.noteForm.note);
+    console.log(imgs);
+    if(!imgs) return null;
 
-export default function Images({ imgs }: Props) {
     const [allHeight, setAllHeight] = useState(0);
     const [isLoading, setLoading] = useState(true);
-    const [imgsData, setImgsData] = useState<{a: number, img: any}[]>([]);
+    const [imgsData, setImgsData] = useState<{ a: number, img: any }[]>([]);
 
     const handleLayout = (event: any) => {
         // get parent width
