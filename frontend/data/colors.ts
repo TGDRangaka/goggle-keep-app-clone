@@ -12,3 +12,18 @@ export const darkColors: string[] = [
     '#4B443A',
     '#232428',
 ]
+
+export const lightColors: string[] = [
+    '#FFFFFF',
+    "#fbafa9",
+    "#f29f75",
+    "#fff8b8",
+    "#e2f6d1",
+    "#b4ded3",
+    "#d3e4ec",
+    "#afccdc",
+    "#d3bfdb",
+    "#f5e2dc",
+    "#e9e3d2",
+    "#efeff1",
+]

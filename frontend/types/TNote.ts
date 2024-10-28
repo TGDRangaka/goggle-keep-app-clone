@@ -1,11 +1,12 @@
+import { TImage } from "./TImage";
 import { TTask } from "./TTask";
 
 export type TNote = {
-    id: string,
+    _id: string,
     title?: string,
     body?: string,
     list?: TTask[],
-    imgs?: any[],
+    imgs?: TImage[],
     reminder?: string,
     color?: string,
     createdDate?: Date,

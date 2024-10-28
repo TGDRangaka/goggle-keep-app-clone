@@ -3,6 +3,8 @@ import React from 'react'
 import { TTask } from '@/types/TTask'
 import Checkbox from 'expo-checkbox'
 import { ThemedText } from '../ThemedText'
+import { useDispatch } from 'react-redux'
+import { noteformActions } from '@/states/noteFormSlice'
 
 type Props = {
     list: TTask[]
@@ -17,7 +19,7 @@ export default function List({ list }: Props) {
             {/* unchecked tasks */}
             {
                 uncheckedTasks.map((l) => (
-                    <View key={l.id} className="flex-row items-center">
+                    <View key={l._id} className="flex-row items-center">
                         <Checkbox className="w-3 h-3 border mr-1" />
                         <ThemedText className="text-sm text-gray-600 font-light">{l.task}</ThemedText>
                     </View>

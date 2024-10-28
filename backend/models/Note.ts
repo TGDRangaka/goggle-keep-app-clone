@@ -5,16 +5,20 @@ export type TNote = {
     title: string;
     body: string;
     list: TTask[];
-    imgs: string[];
+    imgs: TImage[];
     reminder: Date;
     color: string;
     createdDate: Date;
 }
 
 export type TTask = {
-    _id: mongoose.Types.ObjectId;
     task: string;
     completed: boolean;
+}
+
+export type TImage = {
+    path: string;
+    uri: string;
 }
 
 // Define the TTask schema
@@ -23,12 +27,18 @@ const taskSchema = new mongoose.Schema<TTask>({
     completed: { type: Boolean, required: true },
 });
 
+// Define the TImage schema
+const imageSchema = new mongoose.Schema<TImage>({
+    path: { type: String },
+    uri: { type: String },
+});
+
 // Define the TNote schema
 const noteSchema = new mongoose.Schema<TNote>({
     title: { type: String },
     body: { type: String },
     list: [taskSchema],
-    imgs: { type: [String], default: [] },
+    imgs: [imageSchema],
     reminder: { type: Date },
     color: { type: String },
     createdDate: { type: Date, default: Date.now },

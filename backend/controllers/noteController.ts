@@ -10,6 +10,20 @@ noteRouter.get('/health', (req, res) => {
 });
 
 // get all
+noteRouter.get('/', async (req, res) => {
+    try {
+        const notes = await NoteService.getAllNotes();
+        res.json({
+            success: true,
+            data: notes
+        });
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
 
 // get reminders
 
@@ -25,6 +39,7 @@ noteRouter.post('/', upload.any(), async (req, res) => {
             data: saved
         });
     } catch (err: any) {
+        console.log(err);
         res.status(500).json({
             success: false,
             error: err.message

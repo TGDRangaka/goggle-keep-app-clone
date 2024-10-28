@@ -1,27 +1,35 @@
-import { Note, TNote } from "../models/Note"
+import { Note, TImage, TNote } from "../models/Note"
 import { uploadAssetToFirebase } from "../utils/uploadAsset";
 
 export default class NoteService {
+    // get all notes
+    static getAllNotes = async () => {
+        return await Note.find({});
+    }
 
     // save note
     static saveNote = async (data: TNote, attachments: any) => {
-        let attachmentsLinks: string[] = [];
-
-        // save attachments in firebase storage
-        if (attachments && attachments.length > 0) {
-            // save attachments
-            for (const attachment of attachments) {
-                const url = await uploadAssetToFirebase(attachment);
-                attachmentsLinks.push(url);
-            }
+        let attachmentsData: TImage[] = [];
+        let list = [];
+        if(data.list){
+            list = JSON.parse(data.list + '')
+            list = list.map((task: any) => {
+                return { task: task.task, completed: task.completed };
+            });
         }
 
-        console.log(attachmentsLinks);
-        console.log(data);
+        // save attachments
+        for (const attachment of attachments) {
+            const imgData = await uploadAssetToFirebase(attachment);
+            attachmentsData.push(imgData);
+        }
 
-        // const saved = await new Note(data).save();
-        // return saved;
-        return null;
+
+        const newNote = { ...data, list, imgs: attachmentsData };
+        console.log(newNote);
+
+        return await new Note(newNote).save();
+        // return null;
     }
 
     static updateNote = async (id: string, data: TNote, attachments: any) => {

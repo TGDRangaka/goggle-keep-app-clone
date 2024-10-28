@@ -1,16 +1,49 @@
 import { TNote } from "@/types/TNote";
 import api from "./api";
+import { TImage } from "@/types/TImage";
 
 export default class NoteService {
-    static save = async (note: TNote) => {
+    static getAll = async () => {
         try {
-            const { status, data } = await api.post('/note', note);
+            const { data } = await api.get('/note');
+            return data.data;
+        } catch (err: any) {
+            console.error(err);
+            throw new Error('Error fetching notes: ' + err.message);
+        }
+    }
+
+    static save = async (note: TNote, newImgs: TImage[]) => {
+        try {
+            const { title, body, list, color, reminder } = note;
+            // formdata
+            const formData = new FormData();
+            
+            title && formData.append('title', title);
+            body && formData.append('body', body);
+            color && formData.append('color', color);
+            reminder && formData.append('reminder', reminder);
+            list && formData.append('list', JSON.stringify(list));
+            
+            for (let i = 0; i < newImgs.length; i++) {
+                const filename = newImgs[i].uri.split('/').pop();
+                const match = /\.(\w+)$/.exec(filename!);
+                const type = match ? `image/${match[1]}` : 'image';
+
+                formData.append('file', {
+                    uri: newImgs[i].uri,
+                    name: filename,
+                    type: type,
+                });
+            }
+
+            const { status, data } = await api.post('/note', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
             if (status === 201) {
                 return data.data;
             }
             throw new Error('Failed to save note ', data);
         } catch (err: any) {
-            console.error(err.message);
+            console.error(err);
             throw new Error('Error saving note: ' + err.message);
         }
     }

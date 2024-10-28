@@ -1,5 +1,5 @@
 export type TTask = {
-    id: string,
+    _id: string,
     task: string,
     completed: boolean,
 }

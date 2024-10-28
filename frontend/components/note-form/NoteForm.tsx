@@ -15,9 +15,10 @@ import ToolBar from '@/components/note-form/ToolBar'
 const iconColor = '#5D5C62'
 type Props = {
     data?: TNote;
+    closeModal: () => void;
 }
 
-export default function NoteForm({ data }: Props) {
+export default function NoteForm({ data, closeModal }: Props) {
     const { isNote } = useSelector((root: RootState) => root.noteForm);
     const { title, body, imgs, list, reminder, color } = useSelector((root: RootState) => root.noteForm.note);
 
@@ -31,9 +32,9 @@ export default function NoteForm({ data }: Props) {
     }, [])
 
     return (
-        <ThemedView className='flex-1 w-full'>
+        <ThemedView className='flex-1 w-full' style={color ? { backgroundColor: color } : null}>
             {/* Header */}
-            <Header />
+            <Header closeModal={closeModal} />
 
             <ScrollView className='mb-12'>
                 {/* images */}

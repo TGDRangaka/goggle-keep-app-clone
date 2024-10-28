@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
-import { ThemedText } from './ThemedText'
+import { ThemedText } from '../ThemedText'
 import { Modal, TouchableOpacity, View,} from 'react-native'
 import { TNote } from '@/types/TNote'
 import { Ionicons } from '@expo/vector-icons'
-import NoteForm from '@/screens/NoteForm'
-import Images from './note/Images'
-import List from './note/List'
+import NoteForm from '@/components/note-form/NoteForm'
+import Images from './Images'
+import List from './List'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/states/store'
 import NoteService from '@/services/noteService'
@@ -16,14 +16,14 @@ type Props = {
 }
 
 export default function Note(props: Props) {
-    const { id, title, body, imgs, list, reminder, color, createdDate } = props.note
+    const { title, body, imgs, list, reminder, color } = props.note
     const [modalVisible, setModalVisible] = useState<boolean>(false);
 
-    const { note } = useSelector((root: RootState) => root.noteForm);
+    const { note, newImgs } = useSelector((root: RootState) => root.noteForm);
     const dispatch = useDispatch();
 
     const handleModalClose = async () => {
-        await NoteService.save(note);
+        // await NoteService.save(note, newImgs);
         setModalVisible(false);
         dispatch(noteformActions.clearNote());
     }
@@ -32,7 +32,7 @@ export default function Note(props: Props) {
         <TouchableOpacity
             onPress={() => setModalVisible(true)}
         >
-            <View className='border border-gray-400 rounded-xl mb-2 overflow-hidden' style={color ? { borderColor: color } : null}>
+            <View className='border border-gray-400 rounded-xl mb-2 overflow-hidden' style={color ? { backgroundColor: color } : null}>
                 {/* images */}
                 {
                     imgs && imgs.length > 0 && <Images imgs={imgs} />
@@ -41,12 +41,12 @@ export default function Note(props: Props) {
                 <View className='p-5 pb-2'>
                     {/* Title */}
                     {
-                        title && <ThemedText className='font-semibold mb-3 text-gray-500'>{title}</ThemedText>
+                        title && <ThemedText className='font-semibold mb-3 text-gray-700'>{title}</ThemedText>
                     }
 
                     {/* Body */}
                     {
-                        body && <ThemedText className='text-sm max-h-40 mb-3 truncate text-gray-400 font-light'>{body}</ThemedText>
+                        body && <ThemedText className='text-sm max-h-40 mb-3 truncate text-gray-600 font-light'>{body}</ThemedText>
                     }
 
                     {/* List */}
@@ -61,7 +61,7 @@ export default function Note(props: Props) {
                             {/* reminder */}
                             {
                                 reminder &&
-                                <View className='bg-gray-300 p-1 flex-row items-center rounded-lg flex-shrink'>
+                                <View className={`p-1 flex-row items-center rounded-lg flex-shrink ${color ? 'bg-white/50' : 'bg-gray-300'}`}>
                                     <Ionicons name='alarm-outline' size={15} color={'#6b7280'} />
                                     <ThemedText className='mx-1 text-xs text-gray-500 font-semibold'>{'Tomorrow, 08:00'}</ThemedText>
                                 </View>
@@ -86,7 +86,7 @@ export default function Note(props: Props) {
                 visible={modalVisible}
                 onRequestClose={handleModalClose}
             >
-                <NoteForm data={props.note} />
+                <NoteForm data={props.note} closeModal={() => setModalVisible(false)} />
             </Modal>
         </TouchableOpacity>
 

@@ -10,15 +10,19 @@ import { noteformActions } from '@/states/noteFormSlice'
 export default function List() {
     const { list } = useSelector((root: RootState) => root.noteForm.note);
     if (!list) return null;
-    
+
     const dispatch = useDispatch();
+
+    const handleTextChange = (id: string, text: string) => {
+        dispatch(noteformActions.setTaskText({ id, text }));
+    }
 
     const unchecked = [...list].filter(t => !t.completed);
     const completed = [...list].filter(t => t.completed);
 
     const handleAdd = () => {
         const newTask: TTask = {
-            id: Math.random().toString(36).substr(2, 9),
+            _id: Math.random().toString(36).substr(2, 9),
             task: '',
             completed: false,
         }
@@ -37,17 +41,21 @@ export default function List() {
         <View>
             {
                 unchecked.map(task => (
-                    <View key={task.id} className='flex-row items-center mt-5 space-x-5'>
+                    <View key={task._id} className='flex-row items-center mt-5 space-x-5'>
                         <View className='flex-row'>
                             <Ionicons name='ellipsis-vertical' size={20} />
                             <Text className='-ml-[14px]'><Ionicons name='ellipsis-vertical' size={25} /></Text>
                         </View>
 
-                        <Checkbox value={task.completed} className='opacity-40' onValueChange={v => toggleCompleted(task.id)} />
+                        <Checkbox value={task.completed} className='opacity-40' onValueChange={v => toggleCompleted(task._id)} />
 
-                        <TextInput className='text-lg text-gray-800 flex-grow' placeholderTextColor='#C4C3C9' value={task.task} />
+                        <TextInput
+                            className='text-lg text-gray-800 flex-grow'
+                            placeholderTextColor='#C4C3C9'
+                            value={task.task}
+                            onChangeText={(t) => handleTextChange(task._id, t)} />
 
-                        <TouchableOpacity onPress={() => handleRemove(task.id)} className='scale-150'><Ionicons name='close-outline' size={25} color={'gray'} /></TouchableOpacity>
+                        <TouchableOpacity onPress={() => handleRemove(task._id)} className='scale-150'><Ionicons name='close-outline' size={25} color={'gray'} /></TouchableOpacity>
                     </View>
                 ))
 
@@ -76,14 +84,18 @@ export default function List() {
 
                     {
                         completed.map(task => (
-                            <View key={task.id} className='flex-row items-center mt-5 space-x-5'>
+                            <View key={task._id} className='flex-row items-center mt-5 space-x-5'>
                                 <View className='flex-row w-[25px]' />
 
-                                <Checkbox value={task.completed} className='opacity-40' onValueChange={v => toggleCompleted(task.id)} />
+                                <Checkbox value={task.completed} className='opacity-40' onValueChange={v => toggleCompleted(task._id)} />
 
-                                <TextInput className='text-lg text-gray-800 flex-grow' placeholderTextColor='#C4C3C9' value={task.task} />
+                                <TextInput
+                                    className='text-lg text-gray-800 flex-grow'
+                                    placeholderTextColor='#C4C3C9'
+                                    value={task.task}
+                                    onChangeText={(t) => handleTextChange(task._id, t)} />
 
-                                <TouchableOpacity onPress={() => handleRemove(task.id)} className='scale-150'><Ionicons name='close-outline' size={25} color={'gray'} /></TouchableOpacity>
+                                <TouchableOpacity onPress={() => handleRemove(task._id)} className='scale-150'><Ionicons name='close-outline' size={25} color={'gray'} /></TouchableOpacity>
                             </View>
                         ))
                     }

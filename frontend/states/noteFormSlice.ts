@@ -1,3 +1,4 @@
+import { TImage } from "@/types/TImage";
 import { TNote } from "@/types/TNote";
 import { TTask } from "@/types/TTask";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
@@ -6,13 +7,13 @@ type TNoteFormSliceState = {
     selectedNoteId: string | null,
     note: TNote,
     isNote: boolean,
-    newImgs: any[],
+    newImgs: TImage[],
 }
 
 const initialState: TNoteFormSliceState = {
     selectedNoteId: null,
     note: {
-        id: "",
+        _id: "",
         title: "",
         body: "",
         list: [],
@@ -35,10 +36,10 @@ const noteFormSlice = createSlice({
             state.note.body = action.payload;
         },
         addImage: (state, action) => {
-            state.note.imgs?.push(action.payload);
+            state.note.imgs?.push({ _id: '', path: "", uri: action.payload });
         },
         addNewImg: (state, action) => {
-            state.newImgs.push(action.payload);
+            state.newImgs.push({ _id: '', path: "", uri: action.payload });
         },
         removeImage: (state, action) => {
             state.note.imgs = state.note.imgs?.filter((_, index) => index !== action.payload);
@@ -47,16 +48,21 @@ const noteFormSlice = createSlice({
             state.note.list?.push(action.payload);
         },
         toggleTaskCompleted: (state, action) => {
-            const task = state.note.list?.find(t => t.id === action.payload);
+            const task = state.note.list?.find(t => t._id === action.payload);
             if (task) {
                 task.completed = !task.completed;
             }
         },
         removeTask: (state, action) => {
-            state.note.list = state.note.list?.filter((task) => task.id !== action.payload);
+            state.note.list = state.note.list?.filter((task) => task._id !== action.payload);
         },
-        toggleIsNote: (state) => {
-            state.isNote = !state.isNote;
+        selectCheckboxes: (state) => {
+            if (state.isNote) {
+                state.isNote = !state.isNote;
+                state.note.body = '';
+                state.note.list = [{ _id: 'asdf', task: "", completed: false }];
+            }
+
         },
         updateReminder: (state, action) => {
             state.note.reminder = action.payload
@@ -67,10 +73,14 @@ const noteFormSlice = createSlice({
             state.isNote = action.payload.body != null;
         },
 
+        setColor: (state, action: PayloadAction<string>) => {
+            state.note.color = action.payload;
+        },
+
         clearNote: state => {
             state.selectedNoteId = null;
             state.note = {
-                id: "",
+                _id: "",
                 title: "",
                 body: "",
                 list: [],
@@ -79,7 +89,15 @@ const noteFormSlice = createSlice({
                 color: '',
             };
             state.isNote = true;
-        }
+            state.newImgs = [];
+        },
+
+        setTaskText: (state, action: PayloadAction<{ id: string, text: string }>) => {
+            const task = state.note.list?.find(t => t._id === action.payload.id);
+            if (task) {
+                task.task = action.payload.text;
+            }
+        },
     },
 })
 
