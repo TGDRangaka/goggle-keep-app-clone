@@ -8,6 +8,8 @@ import { noteformActions } from '@/states/noteFormSlice';
 import { RootState } from '@/states/store';
 import NoteService from '@/services/noteService';
 import { noteActions } from '@/states/noteSlice';
+import { TNote } from '@/types/TNote';
+import { setReminder } from '@/utils/reminders';
 
 const iconsColor = '#444650'
 
@@ -23,11 +25,13 @@ export default function Footer() {
 
   const handleModalClose = async () => {
     setModalVisible(false);
-    await NoteService.save(note, newImgs);
-    const allNotes = await NoteService.getAll();
-    dispatch(noteActions.setNotes(allNotes));
+    const newNote: TNote = await NoteService.save(note, newImgs);
+    dispatch(noteActions.addNote(newNote));
     dispatch(noteformActions.clearNote());
-  }
+
+    // Set a reminder notification if the new note has a reminder
+    setReminder(newNote);
+  };
 
   return (
     <View className='w-screen flex-row absolute left-0 bottom-0 bg-transparent'>

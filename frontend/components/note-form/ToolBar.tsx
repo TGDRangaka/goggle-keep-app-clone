@@ -32,7 +32,6 @@ export default function ToolBar() {
         if (!result.canceled) {
             //   setImage(result.assets[0].uri);
             for (const asset of result.assets) {
-                console.log(asset.uri);
                 dispatch(noteformActions.addImage(asset.uri))
                 dispatch(noteformActions.addNewImg(asset.uri))
             }

@@ -7,7 +7,15 @@ export type TNote = {
     body?: string,
     list?: TTask[],
     imgs?: TImage[],
-    reminder?: string,
+    reminder: { datetime: string, repeat: ERepeat } | null,
     color?: string,
     createdDate?: Date,
+}
+
+export enum ERepeat {
+    Daily = 'Daily',
+    Weekly = 'Weekly',
+    Monthly = 'Monthly',
+    Yearly = 'Yearly',
+    DOES_NOT_REPEAT = 'Does not repeat',
 }

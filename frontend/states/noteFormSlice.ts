@@ -8,6 +8,7 @@ type TNoteFormSliceState = {
     note: TNote,
     isNote: boolean,
     newImgs: TImage[],
+    reminderEditModal: boolean,
 }
 
 const initialState: TNoteFormSliceState = {
@@ -18,11 +19,12 @@ const initialState: TNoteFormSliceState = {
         body: "",
         list: [],
         imgs: [],
-        reminder: '',
+        reminder: null,
         color: '',
     },
     isNote: true,
     newImgs: [],
+    reminderEditModal: false,
 };
 
 const noteFormSlice = createSlice({
@@ -67,10 +69,11 @@ const noteFormSlice = createSlice({
         updateReminder: (state, action) => {
             state.note.reminder = action.payload
         },
-
+        
         setNote: (state, action: PayloadAction<TNote>) => {
             state.note = action.payload;
-            state.isNote = action.payload.body != null;
+            state.isNote = action.payload.list?.length == 0;
+            state.selectedNoteId = action.payload._id;
         },
 
         setColor: (state, action: PayloadAction<string>) => {
@@ -85,7 +88,7 @@ const noteFormSlice = createSlice({
                 body: "",
                 list: [],
                 imgs: [],
-                reminder: '',
+                reminder: null,
                 color: '',
             };
             state.isNote = true;
@@ -97,6 +100,10 @@ const noteFormSlice = createSlice({
             if (task) {
                 task.task = action.payload.text;
             }
+        },
+
+        setReminderModalVisible: (state, action) => {
+            state.reminderEditModal = action.payload;
         },
     },
 })

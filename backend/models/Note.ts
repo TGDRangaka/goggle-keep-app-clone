@@ -1,12 +1,23 @@
 import mongoose from 'mongoose';
 
+export enum ERpeat {
+    Daily = 'Daily',
+    Weekly = 'Weekly',
+    Monthly = 'Monthly',
+    Yearly = 'Yearly',
+    DOES_NOT_REPEAT = 'Does not repeat',
+}
+
 export type TNote = {
     _id: mongoose.Types.ObjectId;
     title: string;
     body: string;
     list: TTask[];
     imgs: TImage[];
-    reminder: Date;
+    reminder: {
+        datetime: string;
+        repeat: ERpeat;
+    };
     color: string;
     createdDate: Date;
 }
@@ -39,7 +50,10 @@ const noteSchema = new mongoose.Schema<TNote>({
     body: { type: String },
     list: [taskSchema],
     imgs: [imageSchema],
-    reminder: { type: Date },
+    reminder: {
+        datetime: { type: String },
+        repeat: { type: String, enum: Object.values(ERpeat) },
+    },
     color: { type: String },
     createdDate: { type: Date, default: Date.now },
 });

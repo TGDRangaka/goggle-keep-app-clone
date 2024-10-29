@@ -1,9 +1,9 @@
-import { View, TextInput, ScrollView } from 'react-native'
+import { View, TextInput, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useEffect } from 'react'
 import { ThemedView } from '@/components/ThemedView'
 import { Ionicons } from '@expo/vector-icons'
 import { ThemedText } from '@/components/ThemedText'
-import { TNote } from '@/types/TNote'
+import { ERepeat, TNote } from '@/types/TNote'
 import Header from '@/components/note-form/Header'
 import Images from '@/components/note-form/Images'
 import List from '@/components/note-form/List'
@@ -11,6 +11,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/states/store'
 import { noteformActions } from '@/states/noteFormSlice'
 import ToolBar from '@/components/note-form/ToolBar'
+import ReminderPopup from './ReminderPopup'
+import { getFormattedDate, getFormattedTime } from '@/utils/utilMaters'
 
 const iconColor = '#5D5C62'
 type Props = {
@@ -69,19 +71,22 @@ export default function NoteForm({ data, closeModal }: Props) {
 
                     {/* checkboxes */}
                     {
-                        list && list.length > 0 && <List />
+                        !isNote && <List />
                     }
 
                     {/* reminder */}
                     {
                         reminder &&
                         <View className='flex-row w-full ml-[45px] mt-5'>
-                            <View className='bg-gray-300 p-1 flex-row items-center rounded-lg flex-shrink'>
-                                <Ionicons name='alarm-outline' size={15} color={'#6b7280'} />
-                                <ThemedText className='mx-1 text-xs text-gray-500 font-semibold'>{'Tomorrow, 08:00'}</ThemedText>
-                            </View>
+                            <TouchableOpacity onPress={() => dispatch(noteformActions.setReminderModalVisible(true))} className='bg-gray-300 p-1 flex-row items-center rounded-lg flex-shrink'>
+                                <Ionicons name={reminder.repeat === ERepeat.DOES_NOT_REPEAT ? 'alarm-outline' : 'repeat'} size={15} color={'#6b7280'} />
+                                <ThemedText className='mx-1 text-xs text-gray-500 font-semibold'>{`${getFormattedDate(reminder.datetime)}, ${getFormattedTime(reminder.datetime)}`}</ThemedText>
+                            </TouchableOpacity>
                         </View>
                     }
+
+                    {/* Reminder edit modal */}
+                    <ReminderPopup />
                 </View>
             </ScrollView>
 

@@ -21,7 +21,7 @@ const noteSlice = createSlice({
             state.loading = false;
         },
         addNote: (state, action) => {
-            state.notes.push(action.payload);
+            state.notes.unshift(action.payload);
         },
         updateNote: (state, action) => {
             const noteIndex = state.notes.findIndex(n => n._id === action.payload._id);

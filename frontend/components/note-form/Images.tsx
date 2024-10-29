@@ -60,20 +60,18 @@ export default function Images() {
         setAllHeight(totalHeight);
     };
 
-    return (
+    return !isLoading && (
         <View style={{ width: '100%', height: allHeight }} onLayout={handleLayout} className='flex-row space-x-1'>
             {/* Image */}
             {
-                isLoading
-                    ? <ActivityIndicator />
-                    : imgsData.length > 0
-                        ? imgsData.map((data, i) => (
-                            <View key={i} style={{ height: allHeight, aspectRatio: data.a }}>
-                                <Image
-                                    source={{ uri: data.img }}
-                                    className="mb-3 h-full w-full"
-                                />
-                                {/* <LinearGradient
+                imgsData.length > 0
+                    ? imgsData.map((data, i) => (
+                        <View key={i} style={{ height: allHeight, aspectRatio: data.a }}>
+                            <Image
+                                source={{ uri: data.img }}
+                                className="mb-3 h-full w-full"
+                            />
+                            {/* <LinearGradient
                                     colors={['transparent', 'rgba(0, 0, 0, 0.4)']}
                                     className='w-full h-full absolute'
                                 >
@@ -81,9 +79,9 @@ export default function Images() {
                                         <Ionicons name='sync' color='white' size={20} />
                                     </TouchableOpacity>
                                 </LinearGradient> */}
-                            </View>
-                        ))
-                        : <></>
+                        </View>
+                    ))
+                    : <></>
             }
         </View>
     )

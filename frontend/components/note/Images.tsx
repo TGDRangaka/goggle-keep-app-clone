@@ -43,6 +43,7 @@ export default function Images({ imgs }: Props) {
                 }
             );
         });
+        // console.log(imgs);
     }, [imgs]);
 
     const handleLayout = (event: any) => {
@@ -55,21 +56,17 @@ export default function Images({ imgs }: Props) {
         setAllHeight(totalHeight);
     };
 
-    return (
+    return !isLoading && (
         <View style={{ width: '100%', height: allHeight }} onLayout={handleLayout} className='flex-row space-x-1'>
-            {isLoading ? (
-                <ActivityIndicator />
-            ) : (
-                imgsData.map((data, i) => (
-                    <View key={i} style={{ height: allHeight, aspectRatio: data.a }}>
-                        <Image
-                            source={{ uri: data.img }}
-                            style={{ width: '100%', height: '100%' }}
-                            className="mb-3 h-full w-full"
-                        />
-                    </View>
-                ))
-            )}
+            {imgsData.map((data, i) => (
+                <View key={i} style={{ height: allHeight, aspectRatio: data.a }}>
+                    <Image
+                        source={{ uri: data.img }}
+                        style={{ width: '100%', height: '100%' }}
+                        className="mb-3 h-full w-full"
+                    />
+                </View>
+            ))}
         </View>
     );
 }

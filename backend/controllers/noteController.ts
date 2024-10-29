@@ -57,6 +57,7 @@ noteRouter.put('/:id', upload.any(), async (req, res) => {
             data: updated
         });
     } catch (err: any) {
+        console.log(err);
         res.status(500).json({
             success: false,
             error: err.message

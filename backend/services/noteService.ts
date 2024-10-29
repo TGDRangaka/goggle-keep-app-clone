@@ -4,18 +4,23 @@ import { uploadAssetToFirebase } from "../utils/uploadAsset";
 export default class NoteService {
     // get all notes
     static getAllNotes = async () => {
-        return await Note.find({});
+        // get all sort by created date time
+        return await Note.find().sort({ createdDate: -1 });
     }
 
     // save note
     static saveNote = async (data: TNote, attachments: any) => {
         let attachmentsData: TImage[] = [];
         let list = [];
+        let reminder = null;
         if(data.list){
             list = JSON.parse(data.list + '')
             list = list.map((task: any) => {
                 return { task: task.task, completed: task.completed };
             });
+        }
+        if(data.reminder){
+            reminder = JSON.parse(data.reminder + '');
         }
 
         // save attachments
@@ -25,7 +30,7 @@ export default class NoteService {
         }
 
 
-        const newNote = { ...data, list, imgs: attachmentsData };
+        const newNote = { ...data, list, reminder, imgs: attachmentsData };
         console.log(newNote);
 
         return await new Note(newNote).save();
@@ -33,25 +38,56 @@ export default class NoteService {
     }
 
     static updateNote = async (id: string, data: TNote, attachments: any) => {
-        // check note exists
-        const exists = await Note.findById(id);
-        if (!exists) {
+        // console.log(id, data, attachments);
+        // console.log('--------------------------------');
+    
+        // Check if the note exists
+        const currentNote = await Note.findById(id);
+        if (!currentNote) {
             throw new Error('Note not found by ID: ' + id);
         }
-
-        // check attachments updated
-
-        // check list updated
-
-        // update attachments in firebase storage
-        if (attachments && attachments.length > 0) {
-            // save attachments
-
-            // set links to attachments
+    
+        // Initialize attachments and lists
+        let attachmentsData: TImage[] = [];
+        let list = [];
+        let reminder = null;
+    
+        // Parse the `list` field if provided
+        if (data.list) {
+            list = JSON.parse(data.list + '');
+            list = list.map((task: any) => ({
+                task: task.task,
+                completed: task.completed,
+            }));
         }
-
-        // update note
+    
+        // Parse the `reminder` field if provided
+        if (data.reminder) {
+            reminder = JSON.parse(data.reminder + '');
+        }
+    
+        // Upload each attachment to Firebase and save the data
+        for (const attachment of attachments) {
+            const imgData = await uploadAssetToFirebase(attachment);
+            attachmentsData.push(imgData);
+        }
+    
+        // Update fields in the current note
+        currentNote.imgs = [...currentNote.imgs, ...attachmentsData];
+        currentNote.list = list;
+        currentNote.reminder = reminder;
+        currentNote.title = data.title;
+        currentNote.body = data.body;
+        currentNote.color = data.color;
+    
+        // Save the updated note to the database
+        await currentNote.save();
+        console.log(currentNote);
+    
+        // Optional: Return the updated note (after saving)
+        return currentNote;
     }
+    
 
     static deleteNote = async (id: string) => {
         // check note exists
