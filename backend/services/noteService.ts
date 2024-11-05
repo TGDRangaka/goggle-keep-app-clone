@@ -8,6 +8,26 @@ export default class NoteService {
         return await Note.find().sort({ createdDate: -1 });
     }
 
+    // get all reminders
+    static getAllReminders = async () => {
+        return await Note.find({ reminder: { $ne: null } });
+    }
+
+    // get all lists
+    static getAllLists = async () => {
+        return await Note.find({ list: { $exists: true, $not: { $size: 0 } } });
+    }
+
+    // get all notes that have images
+    static getAllNotesWithImages = async () => {
+        return await Note.find({ imgs: { $exists: true, $not: { $size: 0 } } });
+    }
+
+    // get note by color
+    static getNotesByColor = async (color: string) => {
+        return await Note.find({ color });
+    }
+
     // save note
     static saveNote = async (data: TNote, attachments: any) => {
         let attachmentsData: TImage[] = [];

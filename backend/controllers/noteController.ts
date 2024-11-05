@@ -26,8 +26,70 @@ noteRouter.get('/', async (req, res) => {
 });
 
 // get reminders
+noteRouter.get('/reminders', async (req, res) => {
+    try {
+        const reminders = await NoteService.getAllReminders();
+        res.json({
+            success: true,
+            data: reminders
+        });
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+});
+
+// get lists
+noteRouter.get('/lists', async (req, res) => {
+    try {
+        const lists = await NoteService.getAllLists();
+        res.json({
+            success: true,
+            data: lists
+        });
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+})
 
 // search
+// get all notes that have images
+noteRouter.get('/images', async (req, res) => {
+    try {
+        const notes = await NoteService.getAllNotesWithImages();
+        res.json({
+            success: true,
+            data: notes
+        });
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+})
+
+// get notes by color
+noteRouter.get('/color/:color', async (req, res) => {
+    try {
+        console.log('#' + req.params.color)
+        const notes = await NoteService.getNotesByColor('#' + req.params.color);
+        res.json({
+            success: true,
+            data: notes
+        });
+    } catch (err: any) {
+        res.status(500).json({
+            success: false,
+            error: err.message
+        });
+    }
+})
 
 
 // create note

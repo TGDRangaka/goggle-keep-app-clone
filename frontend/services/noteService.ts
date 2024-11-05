@@ -1,17 +1,19 @@
 import { TNote } from "@/types/TNote";
-import api from "./api";
+import api, { EAPIS } from "./api";
 import { TImage } from "@/types/TImage";
 
 export default class NoteService {
     static getAll = async (): Promise<TNote[]> => {
         try {
-            const { data } = await api.get('/note');
+            const { data } = await api.get(EAPIS.NOTE);
             return data.data;
         } catch (err: any) {
             console.error(err);
             throw new Error('Error fetching notes: ' + err.message);
         }
     }
+
+    
 
     static save = async (note: TNote, newImgs: TImage[]) => {
         try {
@@ -37,7 +39,7 @@ export default class NoteService {
                 });
             }
 
-            const { status, data } = await api.post('/note', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+            const { status, data } = await api.post(EAPIS.NOTE, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
             if (status === 201) {
                 // console.log(data.data);
                 return data.data;
@@ -73,7 +75,7 @@ export default class NoteService {
                 });
             }
 
-            const { status, data } = await api.put('/note/' + note._id, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+            const { status, data } = await api.put(`${EAPIS.NOTE}/${note._id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
             if (status === 200) {
                 // console.log(data.data);
                 return data.data;
