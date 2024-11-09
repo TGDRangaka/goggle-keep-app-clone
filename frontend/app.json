@@ -19,7 +19,11 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.tgdrangaka.keepapp"
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +41,15 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "bc751a4a-b0a0-48a7-a66e-d104a65936a0"
+      }
+    },
+    "owner": "tgdrangaka"
   }
 }

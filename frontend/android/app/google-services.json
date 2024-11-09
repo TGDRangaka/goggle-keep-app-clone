@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "830112398991",
+    "firebase_url": "https://dilshanrangaka-2002s-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "dilshanrangaka-2002s",
+    "storage_bucket": "dilshanrangaka-2002s.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:830112398991:android:4018a797c30dc8ad907afa",
+        "android_client_info": {
+          "package_name": "com.tgdrangaka.keepapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "830112398991-0kk64dadmv6pa0hb8g0el4kseuauc879.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tgdrangaka.keepapp",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "830112398991-qr5iuc6oifbdmlc3qu6e1ug4sn7qi0gf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYPpviuTEhQ2SUhU9zIMKKLDkgy_tOpgw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "830112398991-qr5iuc6oifbdmlc3qu6e1ug4sn7qi0gf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

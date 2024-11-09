@@ -77,7 +77,6 @@ noteRouter.get('/images', async (req, res) => {
 // get notes by color
 noteRouter.get('/color/:color', async (req, res) => {
     try {
-        console.log('#' + req.params.color)
         const notes = await NoteService.getNotesByColor('#' + req.params.color);
         res.json({
             success: true,
