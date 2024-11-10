@@ -29,11 +29,10 @@ export default function SearchScreen() {
 
     const onSearchType = (text: any) => {
         if (searchNotes.length > 0) {
-            setSearchNotes(prev =>
-                prev.filter(note =>
-                    note.body?.includes(text) ||
-                    note.title?.includes(text)
-                )
+            setSearchNotes(notes.filter(note =>
+                note.body?.includes(text) ||
+                note.title?.includes(text)
+            )
             )
         } else {
             const filtered = notes.filter(note =>
@@ -45,40 +44,48 @@ export default function SearchScreen() {
     }
 
     const onSearchOptionPress = async (opt: SearchOptions) => {
-        try {
-            setLoading(true);
-            const respond = await api.get(
-                opt == SearchOptions.REMINDERS ? EAPIS.NOTE_REMINDERS
-                    : opt == SearchOptions.LISTS ? EAPIS.NOTE_LISTS
-                        : EAPIS.NOTE_IMAGES
-            );
-            if (respond.status === 200) {
-                setSearchNotes(respond.data.data);
-                return;
-            }
-            console.error('Failed to fetch notes by: ', opt);
-        } catch (err) {
-            console.error('Error fetching notes: ', opt, err);
-        } finally {
-            setLoading(false);
+        // try {
+        //     setLoading(true);
+        //     const respond = await api.get(
+        //         opt == SearchOptions.REMINDERS ? EAPIS.NOTE_REMINDERS
+        //             : opt == SearchOptions.LISTS ? EAPIS.NOTE_LISTS
+        //                 : EAPIS.NOTE_IMAGES
+        //     );
+        //     if (respond.status === 200) {
+        //         setSearchNotes(respond.data.data);
+        //         return;
+        //     }
+        //     console.error('Failed to fetch notes by: ', opt);
+        // } catch (err) {
+        //     console.error('Error fetching notes: ', opt, err);
+        // } finally {
+        //     setLoading(false);
+        // }
+        if (opt === SearchOptions.REMINDERS) {
+            setSearchNotes(notes.filter(n => n.reminder));
+        } else if (opt == SearchOptions.LISTS) {
+            setSearchNotes(notes.filter(n => n.list && n.list.length > 0));
+        } else if (opt == SearchOptions.IMAGES) {
+            setSearchNotes(notes.filter(n => n.imgs && n.imgs.length > 0));
         }
     }
 
     const onColorPress = async (color: string) => {
-        try {
-            setLoading(true);
-            const respond = await api.get(`${EAPIS.NOTE_COLOR}/${color.replace('#', '')}`);
-            if (respond.status === 200) {
-                setSearchNotes(respond.data.data);
-                return;
-            }
-            throw new Error('Failed to fetch notes by color: ' + color);
-        } catch (err) {
-            console.error('Error fetching notes: ', color, err);
-            console.log(err);
-        } finally {
-            setLoading(false);
-        }
+        // try {
+        //     setLoading(true);
+        //     const respond = await api.get(`${EAPIS.NOTE_COLOR}/${color.replace('#', '')}`);
+        //     if (respond.status === 200) {
+        //         setSearchNotes(respond.data.data);
+        //         return;
+        //     }
+        //     throw new Error('Failed to fetch notes by color: ' + color);
+        // } catch (err) {
+        //     console.error('Error fetching notes: ', color, err);
+        //     console.log(err);
+        // } finally {
+        //     setLoading(false);
+        // }
+        setSearchNotes(notes.filter(n => n.color === color));
     }
 
     const onBackPress = () => navigation.goBack()
@@ -92,7 +99,7 @@ export default function SearchScreen() {
     if (!loading && searchNotes && searchNotes.length > 0) {
         return (
             <ScrollView>
-                <ThemedView className='flex-1'>
+                <ThemedView className='h-screen'>
                     <View className='flex-row p-3 pt-10 h-24 items-center bg-gray-200'>
                         <TouchableOpacity onPress={onBackPress}>
                             <Ionicons name='arrow-back' size={30} />
@@ -104,7 +111,7 @@ export default function SearchScreen() {
                     </View>
 
                     {/* notes */}
-                    <ThemedView className="flex-row h-full justify-center w-full pb-16">
+                    <ThemedView className="flex-row flex-grow justify-center w-full pb-16 px-2 pt-2">
                         <ThemedView className="w-1/2 flex-col p-1">
                             {
                                 searchNotes.filter((_, i) => i % 2 == 0).map((note) => (

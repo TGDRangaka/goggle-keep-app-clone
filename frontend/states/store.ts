@@ -13,12 +13,14 @@
 import { configureStore } from '@reduxjs/toolkit'
 import noteReducer from "./noteSlice";
 import noteFormReducer from "./noteFormSlice";
+import authReducer from "./authSlice";
 
 export const makeStore = () => {
     return configureStore({
         reducer: {
             note: noteReducer,
-            noteForm: noteFormReducer
+            noteForm: noteFormReducer,
+            auth: authReducer,
         },
     })
 }

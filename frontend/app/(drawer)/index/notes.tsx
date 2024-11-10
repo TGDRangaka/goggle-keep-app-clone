@@ -14,13 +14,14 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 
 export default function Index() {
   const { notes, loading } = useSelector((root: RootState) => root.note);
+  const { user } = useSelector((root: RootState) => root.auth);
   const [column1Notes, setColumn1Notes] = useState<TNote[]>([]);
   const [column2Notes, setColumn2Notes] = useState<TNote[]>([]);
   const dispatch = useDispatch();
 
   const fetchAllNotes = async () => {
     dispatch(noteActions.startLoading());
-    const allNotes = await NoteService.getAll();
+    const allNotes = await NoteService.getAll(user?._id!);
     dispatch(noteActions.setNotes(allNotes));
   }
 

@@ -10,10 +10,12 @@ const api = axios.create({
 export default api;
 
 export enum EAPIS {
+    USER = '/user',
+    USER_CHECK = '/user/verify',
+
     NOTE = '/note',
     NOTE_LISTS = '/note/lists',
     NOTE_REMINDERS = '/note/reminders',
-    // NOTE_SEARCH = '/note/search',
     NOTE_COLOR = '/note/color',
     NOTE_IMAGES = '/note/images'
 }

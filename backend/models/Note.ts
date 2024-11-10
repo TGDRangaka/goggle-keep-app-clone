@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { TUser } from './User';
 
 export enum ERpeat {
     Daily = 'Daily',
@@ -20,6 +21,8 @@ export type TNote = {
     };
     color: string;
     createdDate: Date;
+
+    user: TUser | string
 }
 
 export type TTask = {
@@ -56,6 +59,7 @@ const noteSchema = new mongoose.Schema<TNote>({
     },
     color: { type: String },
     createdDate: { type: Date, default: Date.now },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
 });
 
 // Create models from schemas

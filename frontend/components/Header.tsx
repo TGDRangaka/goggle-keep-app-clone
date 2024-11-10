@@ -6,8 +6,11 @@ import { Ionicons } from '@expo/vector-icons'
 import { useNavigation } from '@react-navigation/native'
 import { Image } from 'expo-image'
 import { useRouter } from 'expo-router'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/states/store'
 
 export default function Header() {
+  const { photoUrl } = useSelector((root: RootState) => root.auth.user!);
   const navigation = useNavigation();
   const router = useRouter();
 
@@ -31,7 +34,7 @@ export default function Header() {
       {/* <Ionicons name='barcode-outline' size={25} color='#b9b9c4'/> */}
       <Ionicons name='grid-outline' size={25} color='#b9b9c4' />
       <ThemedView className='w-8 aspect-square bg-transparent rounded-full -mr-2'>
-        <Image source={require('@/assets/images/icon.png')} contentFit="cover" className='w-8 aspect-square rounded-full' />
+        <Image source={{ uri: photoUrl}} contentFit="cover" className='w-8 aspect-square rounded-full' />
       </ThemedView>
     </ThemedView>
   )

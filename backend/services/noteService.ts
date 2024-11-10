@@ -1,11 +1,12 @@
 import { Note, TImage, TNote } from "../models/Note"
+import { User } from "../models/User";
 import { uploadAssetToFirebase } from "../utils/uploadAsset";
 
 export default class NoteService {
     // get all notes
-    static getAllNotes = async () => {
-        // get all sort by created date time
-        return await Note.find().sort({ createdDate: -1 });
+    static getAllNotes = async (user: string) => {
+        // get all sort by created date time and user
+        return await Note.find({ user }).sort({ createdDate: -1 });
     }
 
     // get all reminders
@@ -29,7 +30,13 @@ export default class NoteService {
     }
 
     // save note
-    static saveNote = async (data: TNote, attachments: any) => {
+    static saveNote = async (data: TNote, attachments: any, userId: string) => {
+        // get user if have
+        const user = await User.findById(userId);
+        if (!user) {
+            throw new Error('User not found by ID: ' + userId);
+        }
+    
         let attachmentsData: TImage[] = [];
         let list = [];
         let reminder = null;
@@ -50,8 +57,8 @@ export default class NoteService {
         }
 
 
-        const newNote = { ...data, list, reminder, imgs: attachmentsData };
-        console.log(newNote);
+        const newNote = { ...data, list, user, reminder, imgs: attachmentsData };
+        // console.log(newNote);
 
         return await new Note(newNote).save();
         // return null;
@@ -102,7 +109,7 @@ export default class NoteService {
     
         // Save the updated note to the database
         await currentNote.save();
-        console.log(currentNote);
+        // console.log(currentNote);
     
         // Optional: Return the updated note (after saving)
         return currentNote;

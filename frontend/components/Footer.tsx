@@ -16,6 +16,7 @@ const iconsColor = '#444650'
 export default function Footer() {
   const [modalVisible, setModalVisible] = useState(false);
   const { note, newImgs } = useSelector((root: RootState) => root.noteForm);
+  const { user } = useSelector((root: RootState) => root.auth);
 
   const dispatch = useDispatch();
 
@@ -25,7 +26,7 @@ export default function Footer() {
 
   const handleModalClose = async () => {
     setModalVisible(false);
-    const newNote: TNote = await NoteService.save(note, newImgs);
+    const newNote: TNote = await NoteService.save(note, newImgs, user!);
     dispatch(noteActions.addNote(newNote));
     dispatch(noteformActions.clearNote());
 

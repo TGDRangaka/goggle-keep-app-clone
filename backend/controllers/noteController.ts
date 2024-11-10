@@ -12,7 +12,13 @@ noteRouter.get('/health', (req, res) => {
 // get all
 noteRouter.get('/', async (req, res) => {
     try {
-        const notes = await NoteService.getAllNotes();
+        // get header 'x-userid'
+        const userId = req.header('x-userid');
+        if (!userId) {
+            res.status(401);
+            return;
+        }
+        const notes = await NoteService.getAllNotes(userId);
         res.json({
             success: true,
             data: notes
@@ -94,7 +100,13 @@ noteRouter.get('/color/:color', async (req, res) => {
 // create note
 noteRouter.post('/', upload.any(), async (req, res) => {
     try {
-        const saved = await NoteService.saveNote(req.body, req.files);
+        // get header 'x-userid'
+        const userId = req.header('x-userid');
+        if (!userId) {
+            res.status(401);
+            return;
+        }
+        const saved = await NoteService.saveNote(req.body, req.files, userId);
         res.status(201).json({
             success: true,
             data: saved
