@@ -34,7 +34,7 @@ export default function Header() {
       {/* <Ionicons name='barcode-outline' size={25} color='#b9b9c4'/> */}
       <Ionicons name='grid-outline' size={25} color='#b9b9c4' />
       <ThemedView className='w-8 aspect-square bg-transparent rounded-full -mr-2'>
-        <Image source={{ uri: photoUrl}} contentFit="cover" className='w-8 aspect-square rounded-full' />
+        <Image source={{ uri: photoUrl ? photoUrl : ''}} contentFit="cover" className='w-8 aspect-square rounded-full' />
       </ThemedView>
     </ThemedView>
   )

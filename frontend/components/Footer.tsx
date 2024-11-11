@@ -1,7 +1,6 @@
-import React, { useState } from 'react'
-import { Ionicons } from '@expo/vector-icons'
-import { Modal, TouchableOpacity, View } from 'react-native'
-import { Image } from 'expo-image'
+import React, { useRef, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import { Modal, TouchableOpacity, View, Text, Pressable, Animated } from 'react-native';
 import NoteForm from '@/components/note-form/NoteForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { noteformActions } from '@/states/noteFormSlice';
@@ -11,66 +10,93 @@ import { noteActions } from '@/states/noteSlice';
 import { TNote } from '@/types/TNote';
 import { setReminder } from '@/utils/reminders';
 
-const iconsColor = '#444650'
+const iconsColor = '#444650';
 
 export default function Footer() {
   const [modalVisible, setModalVisible] = useState(false);
+  const [optionsOpen, setOptionsOpen] = useState(false);
   const { note, newImgs } = useSelector((root: RootState) => root.noteForm);
   const { user } = useSelector((root: RootState) => root.auth);
+
+  // Animation values
+  const rotateAni = useRef(new Animated.Value(0)).current;
+  const optionAnimations = [
+    useRef(new Animated.Value(0)).current,
+    useRef(new Animated.Value(0)).current,
+    useRef(new Animated.Value(0)).current,
+    useRef(new Animated.Value(0)).current,
+  ];
 
   const dispatch = useDispatch();
 
   const handleViewForm = async () => {
     setModalVisible(true);
-  }
+  };
+
+  const pressOptionOpen = () => {
+    setOptionsOpen(!optionsOpen);
+
+    // Rotate the main button
+    Animated.timing(rotateAni, {
+      toValue: optionsOpen ? 0 : 45,
+      duration: 150,
+      useNativeDriver: true,
+    }).start();
+
+    const aniOrder = optionsOpen ? optionAnimations.reverse() : optionAnimations;
+
+    // Animate each option's opacity with a staggered delay
+    aniOrder.forEach((animation, index) => {
+      Animated.timing(animation, {
+        toValue: optionsOpen ? 0 : 1, // Hide when closing, show when opening
+        duration: 175,
+        delay: index * 130, // Stagger effect
+        useNativeDriver: true,
+      }).start();
+    });
+  };
 
   const handleModalClose = async () => {
     setModalVisible(false);
     const newNote: TNote = await NoteService.save(note, newImgs, user!);
     dispatch(noteActions.addNote(newNote));
     dispatch(noteformActions.clearNote());
-
-    // Set a reminder notification if the new note has a reminder
     setReminder(newNote);
   };
 
   return (
-    <View className='w-screen flex-row absolute left-0 bottom-0 bg-transparent'>
-      {/* <ThemedText>Footer</ThemedText> */}
-      <View className='bg-gray-200 flex-row py-4 space-x-6 px-8 flex-grow'>
-        <TouchableOpacity
-          onPress={handleViewForm}
-        ><Ionicons name='checkbox-outline' color={iconsColor} size={28} /></TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={handleViewForm}
-        ><Ionicons name='brush-outline' color={iconsColor} size={28} /></TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={handleViewForm}
-        ><Ionicons name='mic-outline' color={iconsColor} size={28} /></TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={handleViewForm}
-        ><Ionicons name='image-outline' color={iconsColor} size={28} /></TouchableOpacity>
+    <View className='items-end justify-end absolute bottom-5 right-5'>
+      {optionsOpen && <View onTouchStart={pressOptionOpen} className='absolute w-screen h-[1000px] bg-black/20 -right-5 -bottom-5' />}
+      {/* Options */}
+      <View>
+        <FooterOption animation={optionAnimations[3]} text='Image' icon='image-outline' onPress={() => { }} />
+        <FooterOption animation={optionAnimations[2]} text='Drawing' icon='brush' onPress={handleViewForm} />
+        <FooterOption animation={optionAnimations[1]} text='List' icon='checkmark-done' onPress={() => { }} />
+        <FooterOption animation={optionAnimations[0]} text='Text' icon='text' onPress={handleViewForm} />
       </View>
 
-
-      <View className='flex-col justify-end items-center h-full w-[68px]'>
-        <TouchableOpacity
-          onPress={handleViewForm}
-          className='absolute -top-9  bg-gray-200 p-[6px] rounded-2xl'
+      {/* Main button */}
+      <Pressable
+        onPress={pressOptionOpen}
+        className='flex-row items-center justify-center w-16 h-16 bg-[#435D9A] rounded-2xl'
+      >
+        <Animated.View
+          style={{
+            transform: [
+              {
+                rotate: rotateAni.interpolate({
+                  inputRange: [0, 45],
+                  outputRange: ['0deg', '45deg'],
+                }),
+              },
+            ],
+          }}
         >
-          <Ionicons name='add' color={'red'} size={40} />
-        </TouchableOpacity>
-        <Image source={require("@/assets/images/mask-path.svg")} className='w-full h-8' />
-        <View className='bg-gray-200 w-full h-7'></View>
-      </View>
-
-      <View className='bg-gray-200 h-full w-10'></View>
+          <Ionicons name="add" size={30} color="white" />
+        </Animated.View>
+      </Pressable>
 
       <Modal
-        // className='absolute'
         animationType='slide'
         transparent={true}
         visible={modalVisible}
@@ -79,5 +105,31 @@ export default function Footer() {
         <NoteForm closeModal={() => setModalVisible(false)} />
       </Modal>
     </View>
-  )
+  );
 }
+
+type OptionProps = {
+  text: string;
+  onPress: () => void;
+  icon: keyof typeof Ionicons.glyphMap;
+  animation: Animated.Value;
+};
+
+const FooterOption = ({ text, onPress, icon, animation }: OptionProps) => {
+  return (
+    <Animated.View
+      style={{
+        opacity: animation, // Only animate opacity for showing/hiding
+      }}
+      className='flex-row justify-end'
+    >
+      <Pressable
+        onPress={onPress}
+        className='p-4 rounded-3xl mb-1 flex-row items-center justify-end space-x-3 bg-blue-100'
+      >
+        <Text className='text-lg'>{text}</Text>
+        <Ionicons name={icon} size={28} color={iconsColor} />
+      </Pressable>
+    </Animated.View>
+  );
+};

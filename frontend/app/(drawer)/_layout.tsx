@@ -22,7 +22,15 @@ export default function Layout() {
               return (
                 <SafeAreaView>
                   <ThemedView className='mt-16 mb-4 px-8'>
-                    <ThemedText className='text-3xl font-semibold'>Goggle Keep</ThemedText>
+                    <ThemedText className='text-3xl font-semibold'>
+                      <Text className='text-[#4E89EE]'>G</Text>
+                      <Text className='text-[#DC3639]'>o</Text>
+                      <Text className='text-[#F4C415]'>o</Text>
+                      <Text className='text-[#4E89EE]'>g</Text>
+                      <Text className='text-[#42BC59]'>l</Text>
+                      <Text className='text-[#DC3639]'>e</Text>
+                      <Text> Keep</Text>
+                    </ThemedText>
                   </ThemedView>
                   <DrawerItemList {...props} />
                 </SafeAreaView>

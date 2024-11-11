@@ -1,27 +1,44 @@
+import React, { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Drawer } from 'expo-router/drawer';
+import { Stack } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { DarkTheme, DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { SafeAreaView, Text, View } from 'react-native';
-import { DrawerItemList } from '@react-navigation/drawer';
-import { ThemedView } from '@/components/ThemedView';
-import { ThemedText } from '@/components/ThemedText';
-import { DarkTheme, DefaultTheme, NavigationContainer, ThemeProvider } from '@react-navigation/native';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { Provider } from 'react-redux';
 import { makeStore } from '@/states/store';
-import { Stack } from 'expo-router';
-import { useState } from 'react';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
+
+// Prevent the splash screen from auto-hiding until fonts are loaded
+SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
   const colorScheme = useColorScheme();
 
+  const [fontsLoaded] = useFonts({
+    // Load custom font(s)
+    'HostGrotesk': require('../assets/fonts/HostGrotesk.ttf'),
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <Provider store={makeStore()}>
-      <GestureHandlerRootView className='flex flex-1'>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
+          screenOptions={{
+            headerShown: false,
+          }}
         >
           <Stack.Screen name='index' />
         </Stack>
