@@ -1,12 +1,11 @@
-import { View, Text } from 'react-native'
 import React from 'react'
-import { ThemedView } from '@/components/ThemedView'
 import { ThemedText } from '@/components/ThemedText'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
-export default function archive() {
+export default function page() {
   return (
-    <ThemedView>
-      <ThemedText>archive</ThemedText>
-    </ThemedView>
+    <SafeAreaView className='bg-white pt-2 px-3 flex-1 justify-center items-center'>
+        <ThemedText>archive</ThemedText>
+    </SafeAreaView>
   )
 }

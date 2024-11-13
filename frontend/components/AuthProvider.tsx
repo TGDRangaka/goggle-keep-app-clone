@@ -8,7 +8,11 @@ import { RootState } from '@/states/store';
 import { authActions } from '@/states/authSlice';
 import { userLoginApi } from '@/services/userService';
 
-const Index = () => {
+type Props = {
+    childrens: React.ReactNode;
+}
+
+const Index = ({ childrens }: Props) => {
     const { isLoading, isAuthenticated } = useSelector((root: RootState) => root.auth);
     const dispatch = useDispatch();
     const router = useRouter();
@@ -17,6 +21,15 @@ const Index = () => {
 
     // Animated value for scaling
     const scaleAnim = useRef(new Animated.Value(0.3)).current;
+
+    useEffect(() => {
+        const loader = async () => {
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            dispatch(authActions.setLoading(false));
+        };
+
+        loader();
+    }, []);
 
     useEffect(() => {
         if (!isLoading) {
@@ -35,12 +48,6 @@ const Index = () => {
             duration: 800,    // Duration of the animation
             useNativeDriver: true,
         }).start();
-        const loader = async () => {
-            await new Promise((resolve) => setTimeout(resolve, 900));
-            dispatch(authActions.setLoading(false));
-        };
-
-        loader();
     }, []);
 
     const googleLogin = async () => {
@@ -70,12 +77,13 @@ const Index = () => {
             } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
                 console.log("Play services not available");
             } else {
-                console.error(error);
+                console.error("Sign-in error:", error);
             }
         }
     };
 
-    return (
+    return isAuthenticated ? (<>{childrens}</>)
+    : (
         <ThemedView className='flex-1 items-center py-16 px-4 bg-white'>
             <View className='flex-grow items-center justify-center'>
                 <Animated.Image

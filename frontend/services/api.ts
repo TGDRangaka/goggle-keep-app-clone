@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://192.168.1.3:3000/google-keep/api/v1",
+    baseURL: "https://goggle-keep-app-clone-production.up.railway.app/google-keep/api/v1",
+    // baseURL: "http://192.168.225.106:3000/google-keep/api/v1",
     headers: {
         'Content-Type': 'application/json',
     }

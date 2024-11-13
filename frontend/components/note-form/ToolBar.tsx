@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, Modal, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Ionicons } from '@expo/vector-icons';
 import { ThemedText } from '../ThemedText';
 import { ThemedView } from '../ThemedView';
@@ -12,12 +12,18 @@ import { noteformActions } from '@/states/noteFormSlice';
 
 const iconColor = '#5D5C62'
 
-export default function ToolBar() {
+export default function ToolBar({ type, closeModal }: any) {
     const [addModal, setAddModal] = useState(false);
     const [colorPeletteModal, setColorPeletteModal] = useState(false);
     const [moreOptionsModal, setMoreOptionsModal] = useState(false);
 
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (type && type === 'image') {
+            pickImage();
+        }
+    }, [])
 
     // pick image
     const pickImage = async () => {
@@ -37,6 +43,11 @@ export default function ToolBar() {
             }
         }
     };
+
+    const onPressDelete = () => {
+        // dispatch(noteformActions.setIsDelete(true));
+        closeModal(true);
+    }
 
     return (
         <>
@@ -72,7 +83,7 @@ export default function ToolBar() {
             {/* more options modal */}
             <ModalView visible={moreOptionsModal} setVisible={setMoreOptionsModal}>
                 <ThemedView className='bg-gray-200 pl-3'>
-                    <Option text="Delete note" icon='trash-outline' />
+                    <Option text="Delete note" icon='trash-outline' onPress={onPressDelete} />
                     <Option text="Make a copy" icon='copy-outline' />
                     <Option text="Send" icon='share-social-outline' />
                     <Option text="Collaborator" icon='person-add-outline' />

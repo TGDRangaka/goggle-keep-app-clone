@@ -1,10 +1,11 @@
-import { View, Text } from 'react-native'
 import React from 'react'
+import { ThemedText } from '@/components/ThemedText'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
-export default function createLabel() {
+export default function page() {
   return (
-    <View>
-      <Text>createLabel</Text>
-    </View>
+    <SafeAreaView className='bg-white pt-2 px-3 flex-1 justify-center items-center'>
+        <ThemedText>Create Label</ThemedText>
+    </SafeAreaView>
   )
 }

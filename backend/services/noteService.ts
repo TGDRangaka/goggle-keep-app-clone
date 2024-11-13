@@ -124,6 +124,7 @@ export default class NoteService {
         }
 
         // delete attachments from firebase storage
+        
 
         // delete note
         await Note.findByIdAndDelete(id);

@@ -10,6 +10,7 @@ import { makeStore } from '@/states/store';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useFonts } from 'expo-font';
 import * as SplashScreen from 'expo-splash-screen';
+import AuthProvider from '@/components/AuthProvider';
 
 // Prevent the splash screen from auto-hiding until fonts are loaded
 SplashScreen.preventAutoHideAsync();
@@ -35,13 +36,15 @@ export default function Layout() {
   return (
     <Provider store={makeStore()}>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen name='index' />
-        </Stack>
+        {/* <AuthProvider> */}
+          <Stack
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
+            <Stack.Screen name='index' />
+          </Stack>
+        {/* </AuthProvider> */}
       </GestureHandlerRootView>
     </Provider>
   );

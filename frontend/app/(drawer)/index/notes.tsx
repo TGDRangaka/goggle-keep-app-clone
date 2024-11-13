@@ -1,16 +1,16 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Note from "@/components/note/Note";
-import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import NoteService from "@/services/noteService";
 import { noteActions } from "@/states/noteSlice";
-import { makeStore, RootState } from "@/states/store";
+import { RootState } from "@/states/store";
 import { TNote } from "@/types/TNote";
-import { store } from "expo-router/build/global-state/router-store";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, ScrollView, View } from "react-native";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function Index() {
   const { notes, loading } = useSelector((root: RootState) => root.note);
@@ -25,9 +25,11 @@ export default function Index() {
     dispatch(noteActions.setNotes(allNotes));
   }
 
-  useEffect(() => {
-    fetchAllNotes();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      notes.length == 0 && fetchAllNotes(); // Fetch notes each time screen gains focus
+    }, [])
+  );
 
   useEffect(() => {
     // divide all notes into 2 columns
@@ -36,8 +38,8 @@ export default function Index() {
   }, [notes]);
 
   return (
-    <ThemedView
-      className="flex-1 items-center px-2 pt-10"
+    <SafeAreaView
+      className="flex-1 items-center bg-white px-2 pt-2"
     >
       <Header />
 
@@ -70,6 +72,6 @@ export default function Index() {
         </ThemedView>
       </ScrollView>
       <Footer />
-    </ThemedView>
+    </SafeAreaView>
   );
 }

@@ -1,6 +1,5 @@
 import { TImage } from "@/types/TImage";
 import { TNote } from "@/types/TNote";
-import { TTask } from "@/types/TTask";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type TNoteFormSliceState = {

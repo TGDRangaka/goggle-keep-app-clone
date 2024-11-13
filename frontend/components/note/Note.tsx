@@ -26,20 +26,29 @@ export default function Note(props: Props) {
     const { note, newImgs } = useSelector((root: RootState) => root.noteForm);
     const dispatch = useDispatch();
 
-    const handleModalClose = async () => {
+    const handleModalClose = async (del?: boolean) => {
         setModalVisible(false);
-        setTimeout(() => setNotePressed(false), 500);
-        const updated = await NoteService.update(note, newImgs);
-        dispatch(noteActions.updateNote(updated));
-        dispatch(noteformActions.clearNote());
+        setTimeout(() => setNotePressed(false), 300);
+        if (del) {
+            // console.log('Delete', note._id);
+            await NoteService.delete(note._id);
+            dispatch(noteActions.deleteNote(_id));
+        } else {
+            // console.log('Update', note._id);
+            const updated = await NoteService.update(note, newImgs);
+            dispatch(noteActions.updateNote(updated));
+            updateReminder(updated);
+        }
 
-        updateReminder(updated);
+        dispatch(noteformActions.clearNote());
     }
 
     const handleNotePress = () => {
         setNotePressed(true);
         setModalVisible(true);
     }
+
+    if (!body && !title && imgs?.length == 0 && list?.length == 0 && !reminder) return;
 
     return (
         <View onTouchEnd={handleNotePress}>
@@ -49,42 +58,44 @@ export default function Note(props: Props) {
                     imgs && imgs.length > 0 && <Images imgs={imgs} />
                 }
 
-                <View className='p-5 pb-2'>
-                    {/* Title */}
-                    {
-                        title && <ThemedText className='font-semibold mb-3 text-gray-700'>{title}</ThemedText>
-                    }
+                {(title || body || list?.length! > 0 || reminder) &&
+                    <View className='p-5 pb-2'>
+                        {/* Title */}
+                        {
+                            title && <ThemedText className='font-semibold mb-3 text-gray-700'>{title}</ThemedText>
+                        }
 
-                    {/* Body */}
-                    {
-                        body && <ThemedText className='text-sm max-h-40 mb-3 truncate text-gray-600 font-light'>{body}</ThemedText>
-                    }
+                        {/* Body */}
+                        {
+                            body && <ThemedText className='text-sm max-h-40 mb-3 truncate text-gray-600 font-light'>{body}</ThemedText>
+                        }
 
-                    {/* List */}
-                    {
-                        list && list.length > 0 && <List list={list} />
-                    }
+                        {/* List */}
+                        {
+                            list && list.length > 0 && <List list={list} />
+                        }
 
 
-                    {
-                        (reminder || color) &&
-                        <View className='flex-row items-center space-x-1 mb-3'>
-                            {/* reminder */}
-                            {
-                                reminder &&
-                                <View className={`p-1 flex-row items-center rounded-lg flex-shrink ${color ? 'bg-white/50' : 'bg-gray-300'}`}>
-                                    <Ionicons name={reminder.repeat === ERepeat.DOES_NOT_REPEAT ? 'alarm-outline' : 'repeat'} size={15} color={'#6b7280'} />
-                                    <ThemedText className='mx-1 text-xs text-gray-500 font-semibold'>{`${getFormattedDate(reminder.datetime)}, ${getFormattedTime(reminder.datetime)}`}</ThemedText>
-                                </View>
-                            }
+                        {
+                            (reminder || color) &&
+                            <View className='flex-row items-center space-x-1 mb-3'>
+                                {/* reminder */}
+                                {
+                                    reminder &&
+                                    <View className={`p-1 flex-row items-center rounded-lg flex-shrink ${color ? 'bg-white/50' : 'bg-gray-300'}`}>
+                                        <Ionicons name={reminder.repeat === ERepeat.DOES_NOT_REPEAT ? 'alarm-outline' : 'repeat'} size={15} color={'#6b7280'} />
+                                        <ThemedText className='mx-1 text-xs text-gray-500 font-semibold'>{`${getFormattedDate(reminder.datetime)}, ${getFormattedTime(reminder.datetime)}`}</ThemedText>
+                                    </View>
+                                }
 
-                            {/* note color */}
-                            {/* {
+                                {/* note color */}
+                                {/* {
                                 color && <View className={`h-6 w-6 rounded-full`} style={{ backgroundColor: color }}></View>
                             } */}
-                        </View>
-                    }
-                </View>
+                            </View>
+                        }
+                    </View>
+                }
 
 
 
@@ -95,7 +106,7 @@ export default function Note(props: Props) {
                 animationType='slide'
                 transparent={false}
                 visible={modalVisible}
-                onRequestClose={handleModalClose}
+                onRequestClose={() => handleModalClose(false)}
             >
                 <NoteForm data={props.note} closeModal={handleModalClose} />
             </Modal>}

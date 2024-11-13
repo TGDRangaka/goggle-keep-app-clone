@@ -96,4 +96,18 @@ export default class NoteService {
             throw new Error('Error saving note: ' + err.message);
         }
     }
+
+    static delete = async (noteId: string) => {
+        try {
+            const { status } = await api.delete(`${EAPIS.NOTE}/${noteId}`);
+            if (status === 200) {
+                console.log('Note deleted');
+                return true;
+            }
+            throw new Error('Failed to delete note');
+        } catch (err: any) {
+            console.error(err);
+            throw new Error('Error deleting note: ' + err.message);
+        }
+    }
 }

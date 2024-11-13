@@ -18,9 +18,10 @@ const iconColor = '#5D5C62'
 type Props = {
     data?: TNote;
     closeModal: () => void;
+    type?: 'text' | 'image' | 'drawing' | 'list';
 }
 
-export default function NoteForm({ data, closeModal }: Props) {
+export default function NoteForm({ data, closeModal, type }: Props) {
     const { isNote } = useSelector((root: RootState) => root.noteForm);
     const { title, body, imgs, list, reminder, color } = useSelector((root: RootState) => root.noteForm.note);
 
@@ -91,7 +92,7 @@ export default function NoteForm({ data, closeModal }: Props) {
             </ScrollView>
 
             {/* bottom tool bar */}
-            <ToolBar />
+            <ToolBar type={type} closeModal={closeModal} />
         </ThemedView>
     )
 }

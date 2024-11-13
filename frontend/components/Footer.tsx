@@ -15,6 +15,7 @@ const iconsColor = '#444650';
 export default function Footer() {
   const [modalVisible, setModalVisible] = useState(false);
   const [optionsOpen, setOptionsOpen] = useState(false);
+  const [selectedType, setType] = useState<'text' | 'image' | 'drawing' | 'list'>('text');
   const { note, newImgs } = useSelector((root: RootState) => root.noteForm);
   const { user } = useSelector((root: RootState) => root.auth);
 
@@ -29,12 +30,16 @@ export default function Footer() {
 
   const dispatch = useDispatch();
 
-  const handleViewForm = async () => {
+  const handleViewForm = async (type: 'text' | 'image' | 'drawing' | 'list') => {
+    setType(type);
     setModalVisible(true);
   };
 
   const pressOptionOpen = () => {
-    setOptionsOpen(!optionsOpen);
+    if (!optionsOpen) setOptionsOpen(true);
+    else {
+      setTimeout(() => setOptionsOpen(false), 520);
+    }
 
     // Rotate the main button
     Animated.timing(rotateAni, {
@@ -57,8 +62,14 @@ export default function Footer() {
   };
 
   const handleModalClose = async () => {
+    pressOptionOpen();
     setModalVisible(false);
+    if (!note.body && !note.title && note.imgs?.length == 0 && newImgs.length == 0 && note.list?.length == 0 && !note.reminder) {
+      dispatch(noteformActions.clearNote());
+      return;
+    }
     const newNote: TNote = await NoteService.save(note, newImgs, user!);
+    // console.log(newNote);
     dispatch(noteActions.addNote(newNote));
     dispatch(noteformActions.clearNote());
     setReminder(newNote);
@@ -68,12 +79,15 @@ export default function Footer() {
     <View className='items-end justify-end absolute bottom-5 right-5'>
       {optionsOpen && <View onTouchStart={pressOptionOpen} className='absolute w-screen h-[1000px] bg-black/20 -right-5 -bottom-5' />}
       {/* Options */}
-      <View>
-        <FooterOption animation={optionAnimations[3]} text='Image' icon='image-outline' onPress={() => { }} />
-        <FooterOption animation={optionAnimations[2]} text='Drawing' icon='brush' onPress={handleViewForm} />
-        <FooterOption animation={optionAnimations[1]} text='List' icon='checkmark-done' onPress={() => { }} />
-        <FooterOption animation={optionAnimations[0]} text='Text' icon='text' onPress={handleViewForm} />
-      </View>
+      {optionsOpen && <View>
+        <FooterOption animation={optionAnimations[3]} text='Image' icon='image-outline' onPress={() => handleViewForm('image')} />
+        <FooterOption animation={optionAnimations[2]} text='Drawing' icon='brush' onPress={() => handleViewForm('drawing')} />
+        <FooterOption animation={optionAnimations[1]} text='List' icon='checkmark-done' onPress={() => {
+          dispatch(noteformActions.selectCheckboxes());
+          handleViewForm('list');
+        }} />
+        <FooterOption animation={optionAnimations[0]} text='Text' icon='text' onPress={() => handleViewForm('text')} />
+      </View>}
 
       {/* Main button */}
       <Pressable
@@ -102,11 +116,13 @@ export default function Footer() {
         visible={modalVisible}
         onRequestClose={handleModalClose}
       >
-        <NoteForm closeModal={() => setModalVisible(false)} />
+        <NoteForm closeModal={() => setModalVisible(false)} type={selectedType} />
       </Modal>
     </View>
   );
 }
+
+
 
 type OptionProps = {
   text: string;
