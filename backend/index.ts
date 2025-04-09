@@ -8,7 +8,7 @@ dotenv.config();
 
 const app: Express = express();
 const port = process.env.PORT || 3000;
-const uri = process.env.DB_URI || 'mongodb+srv://tgdilshanrangaka:wOuteCwo34Xolw15@cluster0.vllnh4g.mongodb.net/google-keep?retryWrites=true&w=majority&appName=Cluster0'
+const uri = process.env.DB_URI || 'mongodb+srv://---:---@cluster0.vllnh4g.mongodb.net/google-keep?retryWrites=true&w=majority&appName=Cluster0'
 const contextPath = process.env.CONTEXT_PATH || '/google-keep/api/v1'
 
 app.use(express.json());
